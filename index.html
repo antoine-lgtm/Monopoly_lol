@@ -11,7 +11,7 @@
 	<script type="text/javascript" src="ai.js"></script>
 	<script type="text/javascript" src="monopoly-serveur/multiplayer-client.js"></script>
 	<script type="text/javascript" src="monopoly.js"></script>
-	<link rel="stylesheet" type="text/css" href="styles.css" />
+	<link rel="stylesheet" type="text/css" href="hextech-theme.css" />
 </head>
 <body>
 
@@ -147,8 +147,13 @@
 					$("#board, #moneybar, #control, #buy").show();
 				}
 
-				pcount = gameState.pcount;
-				turn   = gameState.turn;
+                pcount = gameState.pcount;
+                turn   = gameState.turn;
+
+                // Mettre à jour le nom affiché
+                if (player[turn]) {
+                    document.getElementById("pname").innerHTML = player[turn].name;
+                }
 
 				// Restaurer les joueurs sans écraser les méthodes
 				for (var i = 0; i <= 8; i++) {
