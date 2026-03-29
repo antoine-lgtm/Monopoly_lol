@@ -6,252 +6,70 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 	<script type="text/javascript" src="classicedition.js"></script>
-	<!-- Pour la version NYC : commenter la ligne du dessus et décommenter celle du dessous -->
 	<!-- <script type="text/javascript" src="newyorkcityedition.js"></script> -->
 	<script type="text/javascript" src="ai.js"></script>
-	<script type="text/javascript" src="monopoly-serveur/multiplayer-client.js"></script>
+	<script type="text/javascript" src="js/multiplayer-client.js"></script>
 	<script type="text/javascript" src="monopoly.js"></script>
-	<link rel="stylesheet" type="text/css" href="hextech-theme.css" />
-	<link rel="stylesheet" href="hextech-theme.css" />
+	<script type="text/javascript" src="js/lobby.js"></script>
 </head>
 <body>
 
 	<!-- ══════════════════════════════════════════════════════ -->
 	<!--  LOBBY MULTIJOUEUR                                     -->
 	<!-- ══════════════════════════════════════════════════════ -->
-	<div id="lobby">
-		<div id="lobby-box">
-			<h1>Monopoly</h1>
-			<h2>Online Edition</h2>
+<div id="lobby">
+  <div id="lobby-box">
+    <h1>Monopoly</h1>
+    <h2>Online Edition</h2>
 
-			<!-- Panel Multijoueur -->
-			<div id="lobby-multi">
-				<label class="lobby-label">Votre nom</label>
-				<input class="lobby-input" id="lobby-name" type="text" maxlength="16" placeholder="Entrez votre nom..." />
+    <!-- Écran principal -->
+    <div id="lobby-home">
+      <button class="lobby-btn" onclick="lobbyShowCreate()">Créer une partie</button>
+      <button class="lobby-btn secondary" onclick="lobbyShowJoin()">Rejoindre une partie</button>
+    </div>
 
-				<div style="display: flex; gap: 10px; margin-bottom: 8px;">
-					<button class="lobby-btn" style="margin-bottom:0;" onclick="lobbyCreate()">Créer une partie</button>
-				</div>
+    <!-- Écran créer -->
+    <div id="lobby-create" style="display:none;">
+      <label class="lobby-label">Votre nom</label>
+      <input class="lobby-input" id="lobby-name-create" type="text" maxlength="16" placeholder="Entrez votre nom..." />
+      <button class="lobby-btn" onclick="lobbyCreate()">Créer</button>
+      <button class="lobby-btn secondary" onclick="lobbyBack()">Retour</button>
+      <div id="lobby-room-code" style="display:none;">
+        <div class="code-label">Code à partager</div>
+        <div style="display:flex; gap:8px; align-items:center; justify-content:center; margin-top:6px;">
+          <div class="code-value" id="lobby-code-value">------</div>
+          <button class="lobby-btn" style="width:auto; padding:6px 12px; margin:0; font-size:10px;" onclick="lobbyCopyCode()">Copier</button>
+        </div>
+      </div>
+      <div id="lobby-players" style="display:none;">
+        <div class="players-label">Joueurs connectés</div>
+        <div id="lobby-player-list"></div>
+      </div>
+      <button class="lobby-btn" id="lobby-start-btn" onclick="lobbyStartMulti()" style="display:none;">Démarrer la partie</button>
+      <div id="lobby-status-create"></div>
+    </div>
 
-				<!-- Formulaire rejoindre -->
-				<div id="lobby-join-form">
-					<hr class="lobby-divider" />
-					<label class="lobby-label">Code de la partie</label>
-					<input class="lobby-input" id="lobby-room-input" type="text" maxlength="6" placeholder="ex: A3F9B2" style="text-transform: uppercase; letter-spacing: 4px;" />
-					<button class="lobby-btn" onclick="lobbyJoin()">Rejoindre la partie</button>
-				</div>
+    <!-- Écran rejoindre : 6 cases -->
+    <div id="lobby-join" style="display:none;">
+      <label class="lobby-label">Votre nom</label>
+      <input class="lobby-input" id="lobby-name-join" type="text" maxlength="16" placeholder="Entrez votre nom..." />
+      <label class="lobby-label">Code de la partie</label>
+      <div id="lobby-code-inputs" style="display:flex; gap:8px; justify-content:center; margin-bottom:14px;">
+        <input class="lobby-code-box" maxlength="1" type="text" />
+        <input class="lobby-code-box" maxlength="1" type="text" />
+        <input class="lobby-code-box" maxlength="1" type="text" />
+        <input class="lobby-code-box" maxlength="1" type="text" />
+        <input class="lobby-code-box" maxlength="1" type="text" />
+        <input class="lobby-code-box" maxlength="1" type="text" />
+      </div>
+      <button class="lobby-btn secondary" onclick="lobbyBack()">Retour</button>
+      <div id="lobby-status-join"></div>
+    </div>
 
-				<!-- Code de la room -->
-				<div id="lobby-room-code" style="display:none;">
-					<div class="code-label">Code à partager</div>
-					<div class="code-value" id="lobby-code-value">------</div>
-				</div>
-
-				<!-- Liste des joueurs -->
-				<div id="lobby-players" style="display:none;">
-					<div class="players-label">Joueurs connectés</div>
-					<div id="lobby-player-list"></div>
-				</div>
-
-				<!-- Bouton démarrer (hôte uniquement) -->
-				<button class="lobby-btn" id="lobby-start-btn" onclick="lobbyStartMulti()" style="display:none;">Démarrer la partie</button>
-
-				<div id="lobby-status"></div>
-			</div>
-		</div>
-	</div>
-
-	<!-- ══════════════════════════════════════════════════════ -->
-	<!--  SCRIPT LOBBY                                          -->
-	<!-- ══════════════════════════════════════════════════════ -->
-	<script type="text/javascript">
-		var lobbyIsHost = false;
-		var lobbyRoomId = null;
-
-		// Connexion et callbacks — dans window.onload pour s'exécuter
-		// après que monopoly.js ait fini de charger
-		window.addEventListener('load', function () {
-
-			mp.connect('https://monopoly-serveur-production.up.railway.app');
-
-			// ── Callbacks lobby ──────────────────────────────
-
-			mp.on('onRoomCreated', function (room) {
-				lobbyIsHost = true;
-				lobbyRoomId = room.id;
-				document.getElementById('lobby-code-value').textContent = room.id;
-				document.getElementById('lobby-room-code').style.display = 'block';
-				document.getElementById('lobby-players').style.display  = 'block';
-				document.getElementById('lobby-start-btn').style.display = 'block';
-				lobbyUpdatePlayers(room.players);
-				lobbySetStatus('Partie créée ! Partagez le code.', 'success');
-			});
-
-			mp.on('onRoomJoined', function (room) {
-				lobbyRoomId = room.id;
-				document.getElementById('lobby-room-code').style.display = 'block';
-				document.getElementById('lobby-code-value').textContent  = room.id;
-				document.getElementById('lobby-players').style.display   = 'block';
-				document.getElementById('lobby-join-form').classList.remove('visible');
-				lobbyUpdatePlayers(room.players);
-				lobbySetStatus('Connecté ! En attente du démarrage...', 'success');
-			});
-
-			mp.on('onPlayerJoined', function (room) {
-				lobbyUpdatePlayers(room.players);
-			});
-
-			mp.on('onPlayerLeft', function (room, playerId) {
-				lobbyUpdatePlayers(room.players);
-				// Si la partie est en cours, passer le tour si c'est l'hôte
-				if (mp.getRoomId()) {
-					var myPlayer = mp.getMyPlayer();
-					if (myPlayer && myPlayer.playerIndex === 0) {
-						addAlert("Un joueur s'est déconnecté.");
-						addAlert("Tour passé automatiquement.");
-						setTimeout(function () {
-							play();
-							setTimeout(function () {
-								mp.syncGameState({ player: player, pcount: pcount, turn: turn, square: square });
-							}, 300);
-						}, 2000);
-					}
-				}
-			});
-
-			mp.on('onGameStarted', function (room) {
-				document.getElementById('lobby').style.display = 'none';
-
-				if (lobbyIsHost) {
-					// Hôte : pré-remplir le setup avec les joueurs de la room
-					var players = room.players;
-					document.getElementById('playernumber').value = players.length;
-					playernumber_onchange();
-					for (var i = 0; i < players.length; i++) {
-						var input = document.getElementById('player' + (i + 1) + 'name');
-						if (input) input.value = players[i].name;
-					}
-					setup();
-				} else {
-					// Autres joueurs : attendre la sync
-					document.getElementById('setup').style.display   = 'none';
-					document.getElementById('board').style.display   = 'table';
-					document.getElementById('moneybar').style.display = 'block';
-					document.getElementById('control').style.display  = 'block';
-				}
-			});
-
-			mp.on('onGameStateUpdated', function (gameState) {
-				// Afficher le plateau si pas encore visible
-				if ($("#setup").is(":visible") || !$("#control").is(":visible")) {
-					$("#setup").hide();
-					$("#board, #moneybar, #control, #buy").show();
-				}
-
-                pcount = gameState.pcount;
-                turn   = gameState.turn;
-
-                // Mettre à jour le nom affiché
-                if (player[turn]) {
-                    document.getElementById("pname").innerHTML = player[turn].name;
-                }
-
-				// Restaurer les joueurs sans écraser les méthodes
-				for (var i = 0; i <= 8; i++) {
-					if (gameState.player[i]) {
-						player[i].name                   = gameState.player[i].name;
-						player[i].color                  = gameState.player[i].color;
-						player[i].position               = gameState.player[i].position;
-						player[i].money                  = gameState.player[i].money;
-						player[i].jail                   = gameState.player[i].jail;
-						player[i].jailroll               = gameState.player[i].jailroll;
-						player[i].human                  = gameState.player[i].human;
-						player[i].bidding                = gameState.player[i].bidding;
-						player[i].creditor               = gameState.player[i].creditor;
-						player[i].communityChestJailCard = gameState.player[i].communityChestJailCard;
-						player[i].chanceJailCard         = gameState.player[i].chanceJailCard;
-						player[i].index                  = gameState.player[i].index;
-					}
-				}
-
-				// Restaurer les cases
-				for (var i = 0; i < 40; i++) {
-					if (gameState.square[i]) {
-						square[i].owner    = gameState.square[i].owner;
-						square[i].house    = gameState.square[i].house;
-						square[i].hotel    = gameState.square[i].hotel;
-						square[i].mortgage = gameState.square[i].mortgage;
-					}
-				}
-
-				document.getElementById("pname").innerHTML = player[turn].name;
-                document.getElementById("quickstats").style.borderColor = player[turn].color;
-                document.getElementById("pmoney").innerHTML = "$" + player[turn].money;
-                updateMoney();
-                updatePosition();
-                updateOwned();
-			});
-
-			mp.on('onError', function (msg) {
-				lobbySetStatus(msg, 'error');
-			});
-
-		});
-
-		// ── Fonctions lobby ──────────────────────────────────
-
-		function lobbySetMode(mode) {
-			document.getElementById('lobby-solo').classList.remove('visible');
-			document.getElementById('lobby-multi').classList.remove('visible');
-			document.getElementById('btn-mode-solo').classList.remove('active');
-			document.getElementById('btn-mode-multi').classList.remove('active');
-			document.getElementById('lobby-' + mode).classList.add('visible');
-			document.getElementById('btn-mode-' + mode).classList.add('active');
-		}
-
-
-		function lobbyCreate() {
-			var name = document.getElementById('lobby-name').value.trim();
-			if (!name) { lobbySetStatus('Entrez votre nom.', 'error'); return; }
-			mp.createRoom(name);
-		}
-
-		function lobbyShowJoin() {
-			document.getElementById('lobby-join-form').classList.toggle('visible');
-		}
-
-		function lobbyJoin() {
-			var name   = document.getElementById('lobby-name').value.trim();
-			var roomId = document.getElementById('lobby-room-input').value.trim().toUpperCase();
-			if (!name)   { lobbySetStatus('Entrez votre nom.', 'error'); return; }
-			if (!roomId) { lobbySetStatus('Entrez un code de partie.', 'error'); return; }
-			mp.joinRoom(roomId, name);
-		}
-
-		function lobbyStartMulti() {
-			mp.startGame();
-		}
-
-		function lobbyUpdatePlayers(players) {
-			var html = '';
-			for (var i = 0; i < players.length; i++) {
-				var p       = players[i];
-				var hostTag = (p.playerIndex === 0) ? '<span class="lobby-player-host">&nbsp;HÔTE</span>' : '';
-				var color   = p.connected ? '#4caf50' : '#e05050';
-				html += '<div class="lobby-player-row">'
-					+ '<span class="lobby-player-dot" style="background:' + color + '"></span>'
-					+ '<span>' + p.name + '</span>' + hostTag
-					+ '</div>';
-			}
-			document.getElementById('lobby-player-list').innerHTML = html;
-		}
-
-		function lobbySetStatus(msg, type) {
-			var el = document.getElementById('lobby-status');
-			el.textContent = msg;
-			el.className   = type || '';
-		}
-	</script>
+  </div>
+</div>
+var lobbyIsHost = false;
+var lobbyRoomId = null;
 
 	<!-- ══════════════════════════════════════════════════════ -->
 	<!--  HTML DU JEU (inchangé)                                -->
