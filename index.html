@@ -183,9 +183,11 @@
 					}
 				}
 
-				updateMoney();
-				updatePosition();
-				updateOwned();
+				document.getElementById("pname").innerHTML = player[turn].name;
+                document.getElementById("quickstats").style.borderColor = player[turn].color;
+                updateMoney();
+                updatePosition();
+                updateOwned();
 			});
 
 			mp.on('onError', function (msg) {
