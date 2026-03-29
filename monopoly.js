@@ -2649,9 +2649,6 @@ function setup() {
 		p.index = playerArray[i - 1]; // ← ajouter cette ligne
 	}
 
-	$("#board, #moneybar").show();
-	$("#setup").hide();
-
 	if (pcount === 2) {
 		document.getElementById("stats").style.width = "454px";
 	} else if (pcount === 3) {
