@@ -2550,6 +2550,7 @@ function play() {
 	document.getElementById("pname").innerHTML = p.name;
 
 	addAlert("It is " + p.name + "'s turn.");
+	mp.syncGameState({ player: player, pcount: pcount, turn: turn, square: square });
 
 	// Check for bankruptcy.
 	if (typeof p.pay === 'function') {
@@ -3053,18 +3054,18 @@ $("#trade-menu-item").click(game.trade);
 // ── Multijoueur ──────────────────────────────────────────
 
 
-	$(document).on('click', '#nextbutton', function (e) {
-		if (mp.getRoomId()) {
-			var myPlayer = mp.getMyPlayer();
-			var currentPlayerName = player[turn] ? player[turn].name : null;
-			if (!myPlayer) { e.preventDefault(); e.stopImmediatePropagation(); return false; }
-			if (myPlayer.name !== currentPlayerName) { e.preventDefault(); e.stopImmediatePropagation(); return false; }
-			game.next();
-			setTimeout(function () {
-				mp.syncGameState({ player: player, pcount: pcount, turn: turn, square: square });
-			}, 500);
-			e.stopImmediatePropagation();
-			return false;
-		}
-	});
+$(document).on('click', '#nextbutton', function (e) {
+    if (mp.getRoomId()) {
+        var myPlayer = mp.getMyPlayer();
+        if (!myPlayer) { e.preventDefault(); e.stopImmediatePropagation(); return false; }
+        if (myPlayer.playerIndex !== (turn - 1)) { e.preventDefault(); e.stopImmediatePropagation(); return false; }
+        game.next();
+        setTimeout(function () {
+            mp.syncGameState({ player: player, pcount: pcount, turn: turn, square: square });
+        }, 500);
+        e.stopImmediatePropagation();
+        return false;
+    }
+});
+
 };
