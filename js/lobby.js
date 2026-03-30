@@ -258,13 +258,44 @@ function lobbyCopyCode() {
 }
 
 
-// Dans js/lobby.js
 document.addEventListener('DOMContentLoaded', () => {
     const inputs = document.querySelectorAll('.lobby-code-box');
+    const container = document.getElementById('lobby-code-inputs');
+
+    // --- 1. Gérer le COLLER (Paste) ---
+    container.addEventListener('paste', (e) => {
+        // On empêche le comportement par défaut (coller tout dans une seule case)
+        e.preventDefault();
+        
+        // On récupère le texte du presse-papier
+        const data = e.clipboardData.getData('text').toUpperCase().trim();
+        const characters = data.split('');
+
+        // On distribue les caractères dans les cases
+        inputs.forEach((input, index) => {
+            if (characters[index]) {
+                input.value = characters[index];
+            }
+        });
+
+        // On met le focus sur la dernière case remplie (ou la 6ème)
+        const lastIndex = Math.min(characters.length, inputs.length) - 1;
+        if (lastIndex >= 0) inputs[lastIndex].focus();
+    });
+
+    // --- 2. Gérer la saisie CLAVIER (Auto-focus) ---
     inputs.forEach((input, index) => {
         input.addEventListener('input', (e) => {
+            // Si on a tapé un caractère, on passe à la case suivante
             if (e.target.value.length === 1 && index < inputs.length - 1) {
-                inputs[index + 1].focus(); // Saute à la case suivante
+                inputs[index + 1].focus();
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            // Si on appuie sur Retour (Backspace), on revient à la case précédente
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                inputs[index - 1].focus();
             }
         });
     });
