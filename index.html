@@ -52,21 +52,25 @@
     </div>
 
     <!-- Écran rejoindre : 6 cases -->
-    <div id="lobby-join" style="display:none;">
-      <label class="lobby-label">Votre nom</label>
-      <input class="lobby-input" id="lobby-name-join" type="text" maxlength="16" placeholder="Entrez votre nom..." />
-      <label class="lobby-label">Code de la partie</label>
-      <div id="lobby-code-inputs" style="display:flex; gap:8px; justify-content:center; margin-bottom:14px;">
+<div id="lobby-join" style="display:none;">
+    <label class="lobby-label">Votre nom</label>
+    <input class="lobby-input" id="lobby-name-join" type="text" maxlength="16" placeholder="Entrez votre nom..." />
+    
+    <label class="lobby-label">Code de la partie</label>
+    <div id="lobby-code-inputs">
         <input class="lobby-code-box" maxlength="1" type="text" />
         <input class="lobby-code-box" maxlength="1" type="text" />
         <input class="lobby-code-box" maxlength="1" type="text" />
         <input class="lobby-code-box" maxlength="1" type="text" />
         <input class="lobby-code-box" maxlength="1" type="text" />
         <input class="lobby-code-box" maxlength="1" type="text" />
-      </div>
-      <button class="lobby-btn secondary" onclick="lobbyBack()">Retour</button>
-      <div id="lobby-status-join"></div>
     </div>
+
+    <button class="lobby-btn" onclick="lobbyJoin()">Rejoindre la partie</button>
+    <button class="lobby-btn secondary" onclick="lobbyBack()">Retour</button>
+    
+    <div id="lobby-status-join"></div>
+</div>
 
   </div>
 </div>
