@@ -1,0 +1,95 @@
+/* --- RESET & FOND --- */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #2c3e50; /* Couleur de fond moderne */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- MASQUER LE JEU AU DÉPART --- */
+#board, #moneybarwrap, #setup, #control, #trade, 
+#popupbackground, #statsbackground, #refresh, #noscript, #deed {
+    display: none !important;
+}
+
+/* --- LE LOBBY (MENU PRINCIPAL) --- */
+#lobby {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#lobby-box {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    text-align: center;
+    width: 400px;
+    border: 4px solid #333;
+}
+
+h1 { margin: 0; color: #d32f2f; font-size: 2.8rem; text-transform: uppercase; letter-spacing: 2px; }
+h2 { margin: 0 0 30px 0; color: #7f8c8d; font-size: 1rem; font-weight: normal; }
+
+/* --- BOUTONS --- */
+.lobby-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 12px 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #d32f2f;
+    color: white;
+    text-transform: uppercase;
+}
+
+.lobby-btn.secondary {
+    background-color: #1976d2;
+}
+
+.lobby-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* --- INPUTS & LABELS --- */
+.lobby-input, .lobby-code-box {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.lobby-code-box {
+    width: 45px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.lobby-label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #444;
+}

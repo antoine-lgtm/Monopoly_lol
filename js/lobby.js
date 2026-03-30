@@ -185,3 +185,74 @@ function lobbyUpdatePlayers(players) {
   }
   document.getElementById('lobby-player-list').innerHTML = html;
 }
+
+
+// --- GESTION DE L'AFFICHAGE DU MENU ---
+
+function lobbyShowCreate() {
+    document.getElementById('lobby-home').style.display = 'none';
+    document.getElementById('lobby-create').style.display = 'block';
+}
+
+function lobbyShowJoin() {
+    document.getElementById('lobby-home').style.display = 'none';
+    document.getElementById('lobby-join').style.display = 'block';
+}
+
+function lobbyBack() {
+    // On cache tout et on remet l'écran d'accueil
+    document.getElementById('lobby-create').style.display = 'none';
+    document.getElementById('lobby-join').style.display = 'none';
+    document.getElementById('lobby-home').style.display = 'block';
+}
+
+// --- LOGIQUE POUR LE CODE À 6 CHIFFRES ---
+
+// Cette partie permet de passer automatiquement à la case suivante
+// quand on tape une lettre dans le code de partie.
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = document.querySelectorAll('.lobby-code-box');
+    
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
+    });
+});
+
+// --- TRANSITION VERS LE JEU ---
+
+function finalizeStartGame() {
+    // 1. On fait disparaître le lobby avec un petit effet (optionnel)
+    const lobby = document.getElementById('lobby');
+    lobby.style.transition = "opacity 0.5s";
+    lobby.style.opacity = "0";
+
+    setTimeout(() => {
+        lobby.style.display = 'none';
+
+        // 2. On affiche les éléments du Monopoly
+        // Note : On utilise 'table' pour le board car c'est un <table> dans ton code
+        document.getElementById('board').style.display = 'table';
+        document.getElementById('moneybarwrap').style.display = 'block';
+        document.getElementById('control').style.display = 'block';
+        
+        // On remet le fond du body en mode "tapis de jeu"
+        document.body.style.backgroundColor = "#e8f5e9";
+    }, 500);
+}
+
+// Exemple de fonction pour copier le code (appelée par ton bouton "Copier")
+function lobbyCopyCode() {
+    const code = document.getElementById('lobby-code-value').innerText;
+    navigator.clipboard.writeText(code);
+    alert("Code copié : " + code);
+}
