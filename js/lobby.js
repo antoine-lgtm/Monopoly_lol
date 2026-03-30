@@ -256,3 +256,16 @@ function lobbyCopyCode() {
     navigator.clipboard.writeText(code);
     alert("Code copié : " + code);
 }
+
+
+// Dans js/lobby.js
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = document.querySelectorAll('.lobby-code-box');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus(); // Saute à la case suivante
+            }
+        });
+    });
+});
