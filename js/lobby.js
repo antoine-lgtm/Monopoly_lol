@@ -113,12 +113,17 @@ window.addEventListener('load', function () {
         setStatus('create', 'Partie créée !', 'success');
     });
 
-    mp.on('onRoomJoined', function (room) {
+mp.on('onRoomJoined', function (room) {
     lobbyRoomId = room.id;
     showScreen('lobby-create');
-    document.getElementById('lobby-room-code').style.display = 'block';
-    document.getElementById('lobby-code-value').textContent  = room.id;
-    document.getElementById('lobby-players').style.display   = 'block';
+    document.getElementById('lobby-room-code').style.display  = 'block';
+    document.getElementById('lobby-code-value').textContent   = room.id;
+    document.getElementById('lobby-players').style.display    = 'block';
+    // Cacher les éléments réservés à l'hôte
+    document.getElementById('lobby-name-create').style.display = 'none';
+    document.querySelector('label[for="lobby-name-create"]')   = null;
+    document.querySelector('.lobby-label').style.display       = 'none';
+    document.querySelector('[onclick="lobbyCreate()"]').style.display = 'none';
     lobbyUpdatePlayers(room.players);
     setStatus('create', 'Connecté ! En attente du démarrage...', 'success');
 });
