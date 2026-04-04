@@ -27,8 +27,6 @@ window.addEventListener('load', function () {
         mp.createRoom(name);
     };
 
-    window.lobbyStartMulti = function () { mp.startGame(); };
-
     window.lobbyCopyCode = function () {
         const code = document.getElementById('lobby-code-value').innerText;
         navigator.clipboard.writeText(code);
