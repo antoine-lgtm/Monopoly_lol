@@ -119,7 +119,8 @@ mp.on('onRoomJoined', function (room) {
     document.getElementById('lobby-players').style.display    = 'block';
     // Cacher les éléments réservés à l'hôte
     document.getElementById('lobby-name-create').style.display = 'none';
-    document.querySelector('label[for="lobby-name-create"]')   = null;
+    var label = document.querySelector('label[for="lobby-name-create"]');
+    if (label) label.style.display = 'none';
     document.querySelector('.lobby-label').style.display       = 'none';
     document.querySelector('[onclick="lobbyCreate()"]').style.display = 'none';
     lobbyUpdatePlayers(room.players);
