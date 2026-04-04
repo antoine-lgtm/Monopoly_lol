@@ -1,17 +1,16 @@
 var lobbyIsHost = false;
 var lobbyRoomId = null;
 
+window.showScreen = function(id) {
+        ['lobby-home', 'lobby-create', 'lobby-join'].forEach(function (s) {
+            document.getElementById(s).style.display = s === id ? 'block' : 'none';
+        });
+    }
 window.addEventListener('load', function () {
 
     mp.connect('https://monopoly-serveur-production.up.railway.app');
 
     // ── NAVIGATION ─────────────────────────────────────────
-
-    window.showScreen = function(id) {
-        ['lobby-home', 'lobby-create', 'lobby-join'].forEach(function (s) {
-            document.getElementById(s).style.display = s === id ? 'block' : 'none';
-        });
-    }
 
     window.lobbyShowCreate = function () { showScreen('lobby-create'); };
     window.lobbyShowJoin = function () { 
