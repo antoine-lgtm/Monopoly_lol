@@ -136,15 +136,13 @@ window.addEventListener('load', function () {
             }
             setup();
         } else {
-            document.getElementById('setup').style.display = 'none';
-            document.getElementById('board').style.display = 'table';
-            document.getElementById('moneybar').style.display = 'block';
-            document.getElementById('control').style.display = 'block';
-        }
+    document.getElementById('lobby').style.display  = 'none';
+    document.getElementById('setup').style.display  = 'none';
+    document.getElementById('board').style.display  = 'table';
+    document.getElementById('moneybar').style.display = 'block';
+    document.getElementById('control').style.display  = 'block';
+}
     });
-
-    // ... (Reste de ton code de synchronisation mp.on('onGameStateUpdated', ...))
-    // Garde tes fonctions de mise à jour à la fin comme dans ton fichier original
 });
 
 function lobbyUpdatePlayers(players) {
