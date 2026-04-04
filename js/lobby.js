@@ -7,7 +7,7 @@ window.addEventListener('load', function () {
 
     // ── NAVIGATION ─────────────────────────────────────────
 
-    function showScreen(id) {
+    window.showScreen = function(id) {
         ['lobby-home', 'lobby-create', 'lobby-join'].forEach(function (s) {
             document.getElementById(s).style.display = s === id ? 'block' : 'none';
         });
