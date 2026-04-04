@@ -115,10 +115,14 @@ window.addEventListener('load', function () {
     });
 
     mp.on('onRoomJoined', function (room) {
-        lobbyRoomId = room.id;
-        lobbyUpdatePlayers(room.players);
-        setStatus('join', 'Connecté ! En attente...', 'success');
-    });
+    lobbyRoomId = room.id;
+    showScreen('lobby-create');
+    document.getElementById('lobby-room-code').style.display = 'block';
+    document.getElementById('lobby-code-value').textContent  = room.id;
+    document.getElementById('lobby-players').style.display   = 'block';
+    lobbyUpdatePlayers(room.players);
+    setStatus('create', 'Connecté ! En attente du démarrage...', 'success');
+});
 
     mp.on('onPlayerJoined', function (room) {
         lobbyUpdatePlayers(room.players);
