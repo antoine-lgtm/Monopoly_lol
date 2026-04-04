@@ -210,6 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- TRANSITION VERS LE JEU ---
 
 function finalizeStartGame() {
+    mp.startGame();
+    }
     // 1. On fait disparaître le lobby avec un petit effet (optionnel)
     const lobby = document.getElementById('lobby');
     lobby.style.transition = "opacity 0.5s";
@@ -227,7 +229,7 @@ function finalizeStartGame() {
         // On remet le fond du body en mode "tapis de jeu"
         document.body.style.backgroundColor = "#e8f5e9";
     }, 500);
-}
+
 
 // Exemple de fonction pour copier le code (appelée par ton bouton "Copier")
 function lobbyCopyCode() {
