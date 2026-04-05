@@ -5,6 +5,7 @@
 var lobbyIsHost = false;
 var lobbyRoomId = null;
 
+// ── Navigation ───────────────────────────────────────────────
 function showScreen(id) {
     ['lobby-home', 'lobby-create', 'lobby-join'].forEach(function (s) {
         document.getElementById(s).style.display = s === id ? 'block' : 'none';
@@ -15,6 +16,7 @@ function lobbyShowCreate() { showScreen('lobby-create'); }
 function lobbyShowJoin()   { showScreen('lobby-join'); setupCodeInputs(); }
 function lobbyBack()       { showScreen('lobby-home'); }
 
+// ── Actions ──────────────────────────────────────────────────
 function lobbyCreate() {
     var name = document.getElementById('lobby-name-create').value.trim();
     if (!name) { setStatus('create', 'Entrez votre nom.', 'error'); return; }
@@ -34,7 +36,7 @@ function lobbyJoin() {
 function lobbyCopyCode() {
     var code = document.getElementById('lobby-code-value').textContent;
     navigator.clipboard.writeText(code);
-    setStatus('create', 'Code copie !', 'success');
+    setStatus('create', 'Code copié !', 'success');
 }
 
 var gameStarted = false;
@@ -45,6 +47,7 @@ function finalizeStartGame() {
     mp.startGame();
 }
 
+// ── Helpers ──────────────────────────────────────────────────
 function setStatus(screen, msg, type) {
     var el = document.getElementById('lobby-status-' + screen);
     if (!el) return;
@@ -75,7 +78,7 @@ function setupCodeInputs() {
     if (container) {
         container.onpaste = function (e) {
             e.preventDefault();
-            var data = e.clipboardData.getData('text').toUpperCase().trim();
+            var data  = e.clipboardData.getData('text').toUpperCase().trim();
             var chars = data.split('');
             boxes.forEach(function (box, index) {
                 if (chars[index]) box.value = chars[index];
@@ -99,6 +102,7 @@ function lobbyUpdatePlayers(players) {
     document.getElementById('lobby-player-list').innerHTML = html;
 }
 
+// ── Connexion + Callbacks ─────────────────────────────────────
 window.addEventListener('load', function () {
 
     mp.connect('https://monopoly-serveur-production.up.railway.app');
@@ -153,6 +157,7 @@ window.addEventListener('load', function () {
 
     mp.on('onGameStarted', function (room) {
         document.getElementById('lobby').style.display = 'none';
+        gameStarted = false;
         if (lobbyIsHost) {
             var players = room.players;
             document.getElementById('playernumber').value = players.length;
