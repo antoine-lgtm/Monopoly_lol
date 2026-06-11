@@ -2670,8 +2670,8 @@ if (!mp.getRoomId()) {
 			play();
 			mp.syncGameState({ player: player, pcount: pcount, turn: turn, square: square });
 		} else {
-			$("#board, #moneybar").show();
-			$("#setup").hide();
+            $("#setup").hide();
+            play();
 		}
 	}
 
