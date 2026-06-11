@@ -197,7 +197,7 @@ mp.on('onGameStarted', function (room) {
     });
 });
 
-// ── FONCTIONS GLOBALES ──────────────────────────────────────
+// ── FONCTIONS GLOBALES ─────────────────────────────────────
 
 function lobbyUpdatePlayers(players) {
     const list = document.getElementById('lobby-player-list');
