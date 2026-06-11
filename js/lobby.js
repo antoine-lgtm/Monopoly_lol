@@ -3,7 +3,7 @@ var lobbyRoomId = null;
 
 window.addEventListener('load', function () {
 
-    mp.connect('https://monopoly-serveur-production.up.railway.app');
+    mp.connect('https://monopoly-serveur.onrender.com');
 
     // ── NAVIGATION ─────────────────────────────────────────
 
